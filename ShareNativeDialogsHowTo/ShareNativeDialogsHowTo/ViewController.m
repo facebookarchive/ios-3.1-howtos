@@ -110,33 +110,41 @@
      image:[UIImage imageNamed:@"iossdk_logo.png"]
      url:[NSURL URLWithString:@"https://developers.facebook.com/ios"]
      handler:^(FBNativeDialogResult result, NSError *error) {
-         NSString *alertText;
+         
+         // Only show the error if it is not due to the dialog
+         // not being supporte, i.e. code = 7, otherwise ignore
+         // because our fallback will show the share view controller.
+         if (error && [error code] == 7) {
+             return;
+         }
+         
+         NSString *alertText = @"";
          if (error) {
              alertText = [NSString stringWithFormat:
                           @"error: domain = %@, code = %d",
                           error.domain, error.code];
-         } else {
-             if (result == FBNativeDialogResultSucceeded) {
-                 alertText = @"Posted successfully.";
-             } else {
-                 alertText = @"Post canceled.";
-             }
+         } else if (result == FBNativeDialogResultSucceeded) {
+             alertText = @"Posted successfully.";
          }
-         // Show the result in an alert
-         [[[UIAlertView alloc] initWithTitle:@"Result"
-                                     message:alertText
-                                    delegate:self
-                           cancelButtonTitle:@"OK!"
-                           otherButtonTitles:nil]
-          show];
+         if (![alertText isEqualToString:@""]) {
+             // Show the result in an alert
+             [[[UIAlertView alloc] initWithTitle:@"Result"
+                                         message:alertText
+                                        delegate:self
+                               cancelButtonTitle:@"OK!"
+                               otherButtonTitles:nil]
+              show];
+         }
     }];
     
     // Fallback, show the view controller that will post using me/feed
     if (!displayedNativeDialog) {
-        ShareViewController *viewController = [[ShareViewController alloc]
-                                               initWithNibName:@"ShareViewController"
-                                               bundle:nil];
-        [self presentViewController:viewController animated:YES completion:nil];
+        ShareViewController *viewController =
+        [[ShareViewController alloc] initWithNibName:@"ShareViewController"
+                                              bundle:nil];
+        [self presentViewController:viewController
+                           animated:YES
+                         completion:nil];
     }
 }
 

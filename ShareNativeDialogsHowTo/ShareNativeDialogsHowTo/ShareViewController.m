@@ -62,9 +62,7 @@ UIAlertViewDelegate>
                           @"error: domain = %@, code = %d",
                           error.domain, error.code];
          } else {
-             alertText = [NSString stringWithFormat:
-                          @"Posted action, id: %@",
-                          [result objectForKey:@"id"]];
+             alertText = @"Posted successfully.";
          }
          // Show the result in an alert
          [[[UIAlertView alloc] initWithTitle:@"Result"
