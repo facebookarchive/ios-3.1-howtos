@@ -311,7 +311,9 @@ FBDialogDelegate>
 - (void) checkIncomingNotification {
     if (self.openedURL) {
         NSString *query = [self.openedURL fragment];
-        
+        if (!query) {
+            query = [self.openedURL query];
+        }
         NSDictionary *params = [self parseURLParams:query];
         // Check target URL exists
         NSString *targetURLString = [params valueForKey:@"target_url"];
