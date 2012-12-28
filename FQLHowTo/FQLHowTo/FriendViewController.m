@@ -18,11 +18,14 @@
 
 @interface FriendViewController ()
 
+@property (strong, nonatomic) UIToolbar *toolbar;
+
 @end
 
 @implementation FriendViewController
 
 @synthesize data = _data;
+@synthesize toolbar = _toolbar;
 
 #pragma mark - Helper methods
 
@@ -57,10 +60,10 @@
     [super viewDidLoad];
 
     // Add a toolbar to hold a Done button that will dismiss this view controller
-    UIToolbar *toolbar = [[UIToolbar alloc] init];
-    toolbar.barStyle = UIBarStyleDefault;
-    [toolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-    [toolbar sizeToFit];
+    self.toolbar = [[UIToolbar alloc] init];
+    self.toolbar.barStyle = UIBarStyleDefault;
+    [self.toolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+    [self.toolbar sizeToFit];
     
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc]
                                    initWithBarButtonSystemItem:UIBarButtonSystemItemDone
@@ -72,9 +75,7 @@
                               target:nil
                               action:nil];
     
-    toolbar.items = [NSArray arrayWithObjects:space, doneButton, nil];
-    
-    [self.view addSubview:toolbar];
+    self.toolbar.items = [NSArray arrayWithObjects:space, doneButton, nil];
 }
 
 - (void)viewDidUnload
@@ -125,6 +126,17 @@
     cell.imageView.image = image;
     
     return cell;
+}
+
+#pragma mark - Table view delegate
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    return self.toolbar;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return self.toolbar.frame.size.height;
 }
 
 @end
